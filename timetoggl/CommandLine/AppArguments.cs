@@ -1,10 +1,13 @@
-﻿using PowerArgs;
+﻿using Newtonsoft.Json.Linq;
+using PowerArgs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using TimeToggl.API;
 using TimeToggl.Helpers;
 using TimeToggl.Settings;
 
@@ -32,6 +35,13 @@ namespace TimeToggl.CommandLine
 
             // TODO
             // Call /me endpoint and store the API token to settings file
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", SecurityHelper.GenerateAuthHeader(username, password));
+            var response = client.GetAsync(Endpoints.Me);
+            string responseJson = (response.Result.Content.ReadAsStringAsync().Result);
+            JObject me = JObject.Parse(responseJson);
+            string api_token = (string)me["data"]["api_token"];
+            Console.WriteLine("API token found: " + api_token);
         }
 
         [ArgActionMethod, ArgDescription("Set API token")]

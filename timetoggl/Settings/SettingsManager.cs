@@ -14,8 +14,6 @@ namespace TimeToggl.Settings
         {
 
         }
-
-
         
         public string ReadSetting(string key)
         {
