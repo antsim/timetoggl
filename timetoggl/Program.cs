@@ -12,7 +12,7 @@ namespace timetoggl
     {
         static void Main(string[] args)
         {
-            Args.InvokeAction<AppArguments>(args);
+            Args.InvokeAction<ArgumentsApp>(args);
         }
     }
 }

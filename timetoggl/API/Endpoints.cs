@@ -9,5 +9,6 @@ namespace TimeToggl.API
     public static class Endpoints
     {
         public const string Me = @"https://www.toggl.com/api/v8/me";
+        public const string TimeEntriesBetween = @"https://www.toggl.com/api/v8/time_entries";
     }
 }

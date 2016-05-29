@@ -18,6 +18,7 @@ namespace TimeToggl.Helpers
                 ConsoleKeyInfo i = Console.ReadKey(true);
                 if (i.Key == ConsoleKey.Enter)
                 {
+                    Console.WriteLine();
                     break;
                 }
                 else if (i.Key == ConsoleKey.Backspace)
