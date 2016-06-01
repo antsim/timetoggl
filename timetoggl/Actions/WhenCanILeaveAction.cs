@@ -1,11 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using TimeToggl.API;
 using TimeToggl.Client;
 
@@ -41,7 +36,7 @@ namespace TimeToggl.Actions
             {
                 int d = int.Parse(e["duration"].ToString());
 
-                if (e["stop"] == null)
+                if (d < 0)
                 {
                     var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                     int now = Convert.ToInt32(DateTime.UtcNow.Subtract(epoch).TotalSeconds);
@@ -62,6 +57,9 @@ namespace TimeToggl.Actions
             else
             {
                 DateTime timeToLeave = DateTime.Now.AddSeconds(timeLeft);
+                TimeSpan stillToGo = TimeSpan.FromSeconds(timeLeft);
+
+                Console.WriteLine($"You still have {stillToGo.ToString(@"hh\:mm\:ss")} to go");
                 Console.WriteLine($"You can leave work at {timeToLeave.ToShortTimeString()}");
             }
         }
