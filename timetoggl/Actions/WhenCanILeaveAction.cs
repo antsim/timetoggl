@@ -19,15 +19,14 @@ namespace TimeToggl.Actions
             var startDate = Uri.EscapeDataString(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz"));
             var endDate = Uri.EscapeDataString(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59).ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz"));
 
-            // Validate token by calling me endpoint
-            string endpoint = Endpoints.TimeEntriesBetween;
+            string endpoint = Endpoints.GET.TimeEntriesBetween;
             endpoint = $@"{endpoint}?start_date={startDate}&end_date={endDate}";
 
             var client = HttpClientFactory.GetClient(Authentication.UserAuth.UserName, Authentication.UserAuth.Password);
             var response = client.GetAsync(endpoint);
 
             string responseJson = (response.Result.Content.ReadAsStringAsync().Result);
-            if (string.IsNullOrEmpty(responseJson))
+            if (responseJson.Equals("null"))
             {
                 return;
             }

@@ -27,7 +27,7 @@ namespace TimeToggl.Actions
             SecureString password = ConsoleHelper.GetConsoleSecureInput("Password");
 
             var client = HttpClientFactory.GetClient(username, password);
-            var response = client.GetAsync(Endpoints.Me);
+            var response = client.GetAsync(Endpoints.GET.Me);
             string responseJson = (response.Result.Content.ReadAsStringAsync().Result);
 
             if (!string.IsNullOrEmpty(responseJson))

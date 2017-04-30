@@ -67,7 +67,11 @@
   <ItemGroup>
     <Compile Include="Actions\AuthenticateAction.cs" />
     <Compile Include="Actions\BaseAction.cs" />
+    <Compile Include="Actions\ClientsAction.cs" />
     <Compile Include="Actions\IAction.cs" />
+    <Compile Include="Actions\ProjectsAction.cs" />
+    <Compile Include="Actions\StartAction.cs" />
+    <Compile Include="Actions\StopAction.cs" />
     <Compile Include="Actions\WhenCanILeaveAction.cs" />
     <Compile Include="API\Authentication.cs" />
     <Compile Include="API\Endpoints.cs" />
