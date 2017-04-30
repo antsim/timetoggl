@@ -38,5 +38,10 @@ namespace TimeToggl.Extensions
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
+
+        public static void ToConsole(this List<string> output)
+        {
+            output.ForEach(t => Console.WriteLine(t));
+        }
     }
 }

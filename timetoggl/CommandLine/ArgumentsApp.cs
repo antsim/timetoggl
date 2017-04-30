@@ -16,6 +16,7 @@ namespace TimeToggl.CommandLine
         {
             IAction action = new WhenCanILeaveAction();
             action.Run();
+            action.PrintOutput();
         }
 
         [ArgActionMethod, ArgDescription("Authenticate (username/password)")]
@@ -23,6 +24,7 @@ namespace TimeToggl.CommandLine
         {
             IAction action = new AuthenticateAction();
             action.Run();
+            action.PrintOutput();
         }
     }
 }

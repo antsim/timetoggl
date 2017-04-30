@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>timetoggl.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CredentialManagement, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\CredentialManagement.1.0.2\lib\net35\CredentialManagement.dll</HintPath>
@@ -63,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\AuthenticateAction.cs" />
+    <Compile Include="Actions\BaseAction.cs" />
     <Compile Include="Actions\IAction.cs" />
     <Compile Include="Actions\WhenCanILeaveAction.cs" />
     <Compile Include="API\Authentication.cs" />
@@ -79,6 +83,7 @@
     <Compile Include="Settings\SettingsManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".travis.yml" />
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>

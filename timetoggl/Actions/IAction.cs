@@ -9,5 +9,6 @@ namespace TimeToggl.Actions
     public interface IAction
     {
         void Run();
+        void PrintOutput();
     }
 }

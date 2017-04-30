@@ -10,7 +10,7 @@ using TimeToggl.Extensions;
 
 namespace TimeToggl.Actions
 {
-    public class AuthenticateAction : IAction
+    public class AuthenticateAction : BaseAction, IAction
     {
         public void Run()
         {
@@ -22,10 +22,9 @@ namespace TimeToggl.Actions
                 Authentication.UserAuth = up;
                 return;
             }
-            Console.Write("Username: ");
-            string username = Console.ReadLine();
-            Console.Write("Password: ");
-            SecureString password = ConsoleHelper.GetConsoleSecurePassword();
+            
+            string username = ConsoleHelper.GetConsoleInput("Username");
+            SecureString password = ConsoleHelper.GetConsoleSecureInput("Password");
 
             var client = HttpClientFactory.GetClient(username, password);
             var response = client.GetAsync(Endpoints.Me);
@@ -35,11 +34,11 @@ namespace TimeToggl.Actions
             {
                 cm.SetCredentials(new UserPass() { UserName = username, Password = password });
 
-                Console.WriteLine("Authentication successful");
+                Output.Add("Authentication successful");
             }
             else
             {
-                Console.WriteLine("Authentication failed. Check your username and password!");
+                Output.Add("Authentication failed. Check your username and password!");
             }
         }
     }
