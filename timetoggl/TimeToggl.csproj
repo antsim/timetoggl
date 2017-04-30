@@ -83,7 +83,6 @@
     <Compile Include="Settings\SettingsManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".travis.yml" />
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
