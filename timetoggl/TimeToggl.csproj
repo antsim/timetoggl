@@ -80,6 +80,7 @@
     <Compile Include="Extensions\SecureStringExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\ConsoleHelper.cs" />
+    <Compile Include="Model\Project.cs" />
     <Compile Include="Security\CredentialsManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

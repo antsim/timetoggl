@@ -1,12 +1,15 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PowerArgs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeToggl.API;
 using TimeToggl.Client;
+using TimeToggl.Model;
 
 namespace TimeToggl.Actions
 {
@@ -38,6 +41,7 @@ namespace TimeToggl.Actions
                 return;
             }
 
+            var projects = new List<Project>();
             JArray entries = JArray.Parse(responseJson);
             foreach (var e in entries)
             {
@@ -47,8 +51,12 @@ namespace TimeToggl.Actions
                 var id = (int)e["id"];
                 var name = e["name"].ToString();
 
+                projects.Add(new Project { Id = id, Name = name });
                 Output.Add($"Project {id}\t{name}");
             }
+
+            var projectJson = JsonConvert.SerializeObject(projects);
+            File.WriteAllText("projects.json", projectJson);
         }
     }
 

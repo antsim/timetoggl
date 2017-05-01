@@ -4,12 +4,15 @@ using PowerArgs;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TimeToggl.API;
 using TimeToggl.Client;
+using TimeToggl.Extensions;
+using TimeToggl.Model;
 
 namespace TimeToggl.Actions
 {
@@ -30,10 +33,34 @@ namespace TimeToggl.Actions
                 action.Run();
             }
 
+            var projectId = _args.ProjectId;
+            if (!string.IsNullOrWhiteSpace(_args.ProjectName))
+            {
+                if (!File.Exists("projects.json"))
+                {
+                    Output.Add("Projects cache did not exist. You can only use project name search after retrieving projects list.");
+                    return;
+                }
+
+                var projects = JsonConvert.DeserializeObject<List<Project>>(File.ReadAllText("projects.json"));
+                var project = projects.FirstOrDefault(p => p.Name.Contains(_args.ProjectName, StringComparison.OrdinalIgnoreCase));
+
+                if (project != null)
+                {
+                    projectId = project.Id;
+                    Output.Add($"Matched project name to project: {project.Name}");
+                }
+                else
+                {
+                    Output.Add("Given project name did not match any of the cached projects");
+                    return;
+                }
+            }
+
             dynamic content = new ExpandoObject();
             content.time_entry = new ExpandoObject();
             content.time_entry.description = _args.Description;
-            content.time_entry.pid = _args.ProjectId;
+            content.time_entry.pid = projectId;
             content.time_entry.created_with = "TimeToggle";
             
             var client = HttpClientFactory.GetClient(Authentication.UserAuth.UserName, Authentication.UserAuth.Password);
@@ -53,7 +80,10 @@ namespace TimeToggl.Actions
         [ArgRequired, ArgDescription("Description of the time entry"), ArgPosition(1)]
         public string Description { get; set; }
 
-        [ArgRequired, ArgDescription("ID of the project"), ArgPosition(2)]
+        [ArgDescription("ID of the project"), ArgShortcut("-pid")]
         public int ProjectId { get; set; }
+
+        [ArgDescription("Name of the project"), ArgShortcut("-p")]
+        public string ProjectName { get; set; }
     }
 }

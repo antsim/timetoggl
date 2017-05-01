@@ -1,11 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PowerArgs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using TimeToggl.API;
 using TimeToggl.Client;
 
@@ -39,12 +36,19 @@ namespace TimeToggl.Actions
                 return;
             }
 
-            JObject json = JObject.Parse(responseJson);
-            var duration = (int)json["data"]["duration"];
-            var description = json["data"]["description"].ToString();
-
-            var ts = TimeSpan.FromSeconds(duration);
-            Output.Add($"Stopped time entry with description \"{description}\" and duration of {ts.ToString(@"hh\:mm\:ss")}");
+            try
+            {
+                JObject json = JObject.Parse(responseJson);
+                var duration = (int)json["data"]["duration"];
+                var description = json["data"]["description"].ToString();
+                var ts = TimeSpan.FromSeconds(duration);
+                Output.Add($"Stopped time entry with description \"{description}\" and duration of {ts.ToString(@"hh\:mm\:ss")}");
+            }
+            catch (JsonReaderException)
+            {
+                Output.Add(responseJson.Replace("\"", ""));
+                return;
+            }
         }
     }
 
