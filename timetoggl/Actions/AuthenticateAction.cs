@@ -1,12 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Net.Http;
-using System.Security;
-using TimeToggl.API;
+﻿using TimeToggl.API;
 using TimeToggl.Client;
 using TimeToggl.Helpers;
 using TimeToggl.Security;
-using TimeToggl.Extensions;
 
 namespace TimeToggl.Actions
 {
@@ -14,7 +9,7 @@ namespace TimeToggl.Actions
     {
         public void Run()
         {
-            CredentialsManager cm = new CredentialsManager();
+            var cm = new CredentialsManager();
             var up = cm.GetCredentials();
 
             if (up != null)
@@ -23,22 +18,27 @@ namespace TimeToggl.Actions
                 return;
             }
             
-            string username = ConsoleHelper.GetConsoleInput("Username");
-            SecureString password = ConsoleHelper.GetConsoleSecureInput("Password");
+            var username = ConsoleHelper.GetConsoleInput("Username");
+            var password = ConsoleHelper.GetConsoleSecureInput("Password");
 
-            var client = HttpClientFactory.GetClient(username, password);
-            var response = client.GetAsync(Endpoints.GET.Me);
-            string responseJson = (response.Result.Content.ReadAsStringAsync().Result);
-
-            if (!string.IsNullOrEmpty(responseJson))
+            using (var client = HttpClientFactory.GetClient(username, password))
             {
-                cm.SetCredentials(new UserPass() { UserName = username, Password = password });
+                var response = client.GetAsync(Endpoints.GET.Me);
+                var responseJson = (response.Result.Content.ReadAsStringAsync().Result);
 
-                Output.Add("Authentication successful");
-            }
-            else
-            {
-                Output.Add("Authentication failed. Check your username and password!");
+                if (!string.IsNullOrEmpty(responseJson))
+                {
+                    var newUp = new UserPass { UserName = username, Password = password };
+
+                    cm.SetCredentials(newUp);
+                    Authentication.UserAuth = newUp;
+
+                    Output.Add("Authentication successful");
+                }
+                else
+                {
+                    Output.Add("Authentication failed. Check your username and password!");
+                }
             }
         }
     }

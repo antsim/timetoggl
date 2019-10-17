@@ -8,6 +8,11 @@ namespace TimeToggl.CommandLine
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
     public class ArgumentsApp
     {
+        public ArgumentsApp()
+        {
+
+        }
+
         [HelpHook, ArgShortcut("-?"), ArgDescription("Shows this help")]
         public bool Help { get; set; }
 

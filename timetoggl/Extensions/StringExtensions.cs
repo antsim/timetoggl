@@ -41,7 +41,7 @@ namespace TimeToggl.Extensions
 
         public static void ToConsole(this List<string> output)
         {
-            output.ForEach(t => Console.WriteLine(t));
+            output.ForEach(Console.WriteLine);
         }
 
         public static bool Contains(this string source, string toCheck, StringComparison comp)

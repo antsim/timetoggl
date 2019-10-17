@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TimeToggl.Extensions;
 
 namespace TimeToggl.Actions
@@ -11,7 +7,7 @@ namespace TimeToggl.Actions
     {
         public List<string> Output { get; set; }
 
-        public BaseAction()
+        protected BaseAction()
         {
             Output = new List<string>();
         }
