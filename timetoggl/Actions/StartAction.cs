@@ -11,12 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeToggl.API;
 using TimeToggl.Client;
+using TimeToggl.CommandLine;
 using TimeToggl.Extensions;
 using TimeToggl.Model;
 
 namespace TimeToggl.Actions
 {
-    class StartAction : BaseAction, IAction
+    class StartAction : IStartAction
     {
         private StartArgs _args;
 
@@ -25,21 +26,22 @@ namespace TimeToggl.Actions
             _args = args;
         }
 
-        public void Run()
+        public string Start(ClArguments arguments)
         {
             if (Authentication.UserAuth == null)
             {
-                IAction action = new AuthenticateAction();
-                action.Run();
+                // TODO: Check vcil
             }
+
+            var sb = new StringBuilder();
 
             var projectId = _args.ProjectId;
             if (!string.IsNullOrWhiteSpace(_args.ProjectName))
             {
                 if (!File.Exists("projects.json"))
                 {
-                    Output.Add("Projects cache did not exist. You can only use project name search after retrieving projects list.");
-                    return;
+                    sb.AppendLine("Projects cache did not exist. You can only use project name search after retrieving projects list.");
+                    return sb.ToString();
                 }
 
                 var projects = JsonConvert.DeserializeObject<List<Project>>(File.ReadAllText("projects.json"));
@@ -48,12 +50,12 @@ namespace TimeToggl.Actions
                 if (project != null)
                 {
                     projectId = project.Id;
-                    Output.Add($"Matched project name to project: {project.Name}");
+                    sb.AppendLine($"Matched project name to project: {project.Name}");
                 }
                 else
                 {
-                    Output.Add("Given project name did not match any of the cached projects");
-                    return;
+                    sb.AppendLine("Given project name did not match any of the cached projects");
+                    return sb.ToString();
                 }
             }
 
@@ -71,7 +73,8 @@ namespace TimeToggl.Actions
             var json = JObject.Parse(responseJson);
             var id = (int)json["data"]["id"];
 
-            Output.Add($"Time entry started with ID {id}");
+            sb.AppendLine($"Time entry started with ID {id}");
+            return sb.ToString();
         }
     }
 

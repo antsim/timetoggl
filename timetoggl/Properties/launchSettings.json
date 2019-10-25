@@ -1,8 +1,7 @@
 {
   "profiles": {
     "TimeToggl": {
-      "commandName": "Project",
-      "commandLineArgs": "vcil"
+      "commandName": "Project"
     }
   }
 }

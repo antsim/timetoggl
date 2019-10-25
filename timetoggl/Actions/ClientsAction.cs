@@ -6,18 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeToggl.API;
 using TimeToggl.Client;
+using TimeToggl.CommandLine;
 
 namespace TimeToggl.Actions
 {
-    class ClientsAction : BaseAction, IAction
+    class ClientsAction : IClientsAction
     {
-        public void Run()
+        public string Get(ClArguments arguments)
         {
             if (Authentication.UserAuth == null)
             {
-                IAction action = new AuthenticateAction();
-                action.Run();
+                // TODO: Check vcil
             }
+
+            var sb = new StringBuilder();
 
             var endpoint = Endpoints.GET.Clients;
 
@@ -33,8 +35,10 @@ namespace TimeToggl.Actions
                 int id = int.Parse(e["id"].ToString());
                 string name = e["name"].ToString();
 
-                Output.Add($"Client {id}\t{name}");
+                sb.AppendLine($"Client {id}\t{name}");
             }
+
+            return sb.ToString();
         }
     }
 }

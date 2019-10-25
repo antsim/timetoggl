@@ -1,20 +1,35 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Configuration;
+using System.Text;
 using TimeToggl.API;
 using TimeToggl.Client;
+using TimeToggl.CommandLine;
 
 namespace TimeToggl.Actions
 {
-    public class WhenCanILeaveAction : BaseAction, IAction
+    public class WhenCanILeaveAction : IWhenCanILeaveAction
     {
-        public void Run()
+        private IAuthenticateActions _authenticateActions;
+
+        public WhenCanILeaveAction(IAuthenticateActions authenticateActions)
+        {
+            _authenticateActions = authenticateActions;
+        }
+
+        public string WhenCanILeave()
+        {
+            return WhenCanILeave(null);
+        }
+
+        public string WhenCanILeave(ClArguments arguments)
         {
             if (Authentication.UserAuth == null)
             {
-                IAction action = new AuthenticateAction();
-                action.Run();
+                _authenticateActions.Authenticate(null);
             }
+
+            var sb = new StringBuilder();
 
             var startDate = Uri.EscapeDataString(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz"));
             var endDate = Uri.EscapeDataString(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59).ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz"));
@@ -30,7 +45,7 @@ namespace TimeToggl.Actions
                 var responseJson = (response.Result.Content.ReadAsStringAsync().Result);
                 if (responseJson.Equals("null"))
                 {
-                    return;
+                    return "ERROR";
                 }
 
                 var entries = JArray.Parse(responseJson);
@@ -56,17 +71,19 @@ namespace TimeToggl.Actions
                 if (timeLeft < 0)
                 {
                     var overtime = TimeSpan.FromSeconds(Math.Abs(timeLeft));
-                    Output.Add($"You are on overtime of {overtime:hh\\:mm\\:ss}");
+                    sb.AppendLine($"You are on overtime of {overtime:hh\\:mm\\:ss}");
                 }
                 else
                 {
                     var timeToLeave = DateTime.Now.AddSeconds(timeLeft);
                     var stillToGo = TimeSpan.FromSeconds(timeLeft);
 
-                    Output.Add($"You still have {stillToGo:hh\\:mm\\:ss} to go");
-                    Output.Add($"You can leave work at {timeToLeave.ToShortTimeString()}");
+                    sb.AppendLine($"You still have {stillToGo:hh\\:mm\\:ss} to go");
+                    sb.AppendLine($"You can leave work at {timeToLeave.ToShortTimeString()}");
                 }
             }
+
+            return sb.ToString();
         }
     }
 }

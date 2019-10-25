@@ -9,11 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeToggl.API;
 using TimeToggl.Client;
+using TimeToggl.CommandLine;
 using TimeToggl.Model;
 
 namespace TimeToggl.Actions
 {
-    class ProjectsAction : BaseAction, IAction
+    class ProjectsAction : IProjectAction
     {
         private ProjectsArgs _args;
         public ProjectsAction(ProjectsArgs args)
@@ -21,13 +22,15 @@ namespace TimeToggl.Actions
             _args = args;
         }
 
-        public void Run()
+        public string GetAll(ClArguments arguments)
         {
             if (Authentication.UserAuth == null)
             {
-                IAction action = new AuthenticateAction();
-                action.Run();
+                // TODO: Check vcil example
             }
+
+            var sb = new StringBuilder();
+
             var endpoint = string.Format(Endpoints.GET.ClientProjects, _args.ClientId);
 
             var client = HttpClientFactory.GetClient(Authentication.UserAuth.UserName, Authentication.UserAuth.Password);
@@ -37,8 +40,8 @@ namespace TimeToggl.Actions
 
             if (responseJson.Equals("null"))
             {
-                Output.Add($"No projects found for client {_args.ClientId}");
-                return;
+                sb.AppendLine($"No projects found for client {_args.ClientId}");
+                return sb.ToString();
             }
 
             var projects = new List<Project>();
@@ -52,11 +55,13 @@ namespace TimeToggl.Actions
                 var name = e["name"].ToString();
 
                 projects.Add(new Project { Id = id, Name = name });
-                Output.Add($"Project {id}\t{name}");
+                sb.AppendLine($"Project {id}\t{name}");
             }
 
             var projectJson = JsonConvert.SerializeObject(projects);
             File.WriteAllText("projects.json", projectJson);
+
+            return sb.ToString();
         }
     }
 

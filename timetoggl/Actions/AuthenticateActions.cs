@@ -1,21 +1,23 @@
 ﻿using TimeToggl.API;
 using TimeToggl.Client;
+using TimeToggl.CommandLine;
 using TimeToggl.Helpers;
 using TimeToggl.Security;
 
 namespace TimeToggl.Actions
 {
-    public class AuthenticateAction : BaseAction, IAction
+    public class AuthenticateActions : IAuthenticateActions
     {
-        public void Run()
+        public string Authenticate(ClArguments arguments)
         {
+
             var cm = new CredentialsManager();
             var up = cm.GetCredentials();
 
             if (up != null)
             {
                 Authentication.UserAuth = up;
-                return;
+                return $"Authenticated: {Authentication.UserAuth.UserName}";
             }
             
             var username = ConsoleHelper.GetConsoleInput("Username");
@@ -33,11 +35,11 @@ namespace TimeToggl.Actions
                     cm.SetCredentials(newUp);
                     Authentication.UserAuth = newUp;
 
-                    Output.Add("Authentication successful");
+                    return "Authentication successful";
                 }
                 else
                 {
-                    Output.Add("Authentication failed. Check your username and password!");
+                    return "Authentication failed. Check your username and password!";
                 }
             }
         }

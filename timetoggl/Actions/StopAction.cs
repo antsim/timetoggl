@@ -3,12 +3,14 @@ using Newtonsoft.Json.Linq;
 using PowerArgs;
 using System;
 using System.Net.Http;
+using System.Text;
 using TimeToggl.API;
 using TimeToggl.Client;
+using TimeToggl.CommandLine;
 
 namespace TimeToggl.Actions
 {
-    class StopAction : BaseAction, IAction
+    class StopAction : IStopAction
     {
         private StopArgs _args;
 
@@ -17,13 +19,14 @@ namespace TimeToggl.Actions
             _args = args;
         }
 
-        public void Run()
+        public string Stop(ClArguments arguments)
         {
             if (Authentication.UserAuth == null)
             {
-                IAction action = new AuthenticateAction();
-                action.Run();
+                // TODO: check vcil
             }
+
+            var sb = new StringBuilder();
 
             string endpoint = string.Format(Endpoints.PUT.Stop, _args.TimeEntryId);
 
@@ -33,7 +36,7 @@ namespace TimeToggl.Actions
             string responseJson = (response.Result.Content.ReadAsStringAsync().Result);
             if (responseJson.Equals("null"))
             {
-                return;
+                return null;
             }
 
             try
@@ -42,13 +45,14 @@ namespace TimeToggl.Actions
                 var duration = (int)json["data"]["duration"];
                 var description = json["data"]["description"].ToString();
                 var ts = TimeSpan.FromSeconds(duration);
-                Output.Add($"Stopped time entry with description \"{description}\" and duration of {ts.ToString(@"hh\:mm\:ss")}");
+                sb.AppendLine($"Stopped time entry with description \"{description}\" and duration of {ts.ToString(@"hh\:mm\:ss")}");
             }
             catch (JsonReaderException)
             {
-                Output.Add(responseJson.Replace("\"", ""));
-                return;
+                sb.AppendLine(responseJson.Replace("\"", ""));
             }
+
+            return sb.ToString();
         }
     }
 
